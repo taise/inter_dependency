@@ -1,4 +1,4 @@
-var diameter = 560,
+var diameter = 1280,
     radius = diameter / 2,
     innerRadius = radius - 60;
 
@@ -50,7 +50,8 @@ var linkClass = function(d) {
 }
 
 //var egonet_json = "0.egonet.json";
-var egonet_json = "3077.egonet.json";
+//var egonet_json = "3077.egonet.json";
+var egonet_json = "14103.egonet.json";
 d3.json(egonet_json, function(error, classes) {
     var nodes = cluster.nodes(classes),
         links = linkHash(nodes);
