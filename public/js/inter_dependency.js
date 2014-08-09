@@ -21,7 +21,7 @@ var svg = d3.select("body").append("svg")
 .append("g")
 .attr("transform", "translate(" + radius + "," + radius + ")");
 
-var link_hash = function(nodes){
+var linkHash = function(nodes){
   var map = {},
       friends = [];
 
@@ -38,21 +38,34 @@ var link_hash = function(nodes){
   return friends;
 };
 
+var linkBase = function(d) { return "v" + d[0].key};
+var linkTarget = function(d) { return "v" + d[2].key};
+
+var linkId = function(d) {
+  return linkBase(d) + "-" + linkTarget(d);
+}
+
+var linkClass = function(d) {
+  return "link " + linkBase(d) + " " + linkTarget(d);
+}
+
 //var egonet_json = "0.egonet.json";
 var egonet_json = "3077.egonet.json";
 d3.json(egonet_json, function(error, classes) {
     var nodes = cluster.nodes(classes),
-        links = link_hash(nodes);
+        links = linkHash(nodes);
 
     svg.selectAll(".link")
     .data(bundle(links))
     .enter().append("path")
-    .attr("class", "link")
-    .attr("d", line);
+    .attr("id", function(d) { return linkId(d)} )
+    .attr("class", function(d) { return linkClass(d)})
+    .attr("d", line)
 
     svg.selectAll(".node")
     .data(nodes.filter(function(n) { return !n.children; }))
     .enter().append("g")
+    .attr("id", function(d) { return d.key })
     .attr("class", "node")
     .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
     .append("text")
@@ -60,8 +73,23 @@ d3.json(egonet_json, function(error, classes) {
     .attr("dy", ".31em")
     .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
     .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+    .on("mouseover", function() {
+        var current = d3.select(this);
+        var current_id = current.datum().key;
+        current.classed("active", true);
+        svg.selectAll(".v" + current_id)
+        .classed("active", true)
+    })
+    .on("mouseout",  function() {
+        var current = d3.select(this);
+        var current_id = current.datum().key;
+        current.classed("active", false);
+        svg.selectAll(".v" + current_id)
+        .classed("active", false)
+    })
     .text(function(d) { return d.key; });
 });
 
 d3.select(self.frameElement).style("height", diameter + "px");
+
 
