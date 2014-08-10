@@ -5,7 +5,7 @@ var diameter = 560,
 
 var cluster = d3.layout.cluster()
 .size([360, innerRadius])
-.sort(function(d) { return d.degree; })
+.sort(function(a, b) { return d3.ascending(a.degree, b.degree); })
 .value(function(d) { return d.degree; });
 
 var bundle = d3.layout.bundle();
