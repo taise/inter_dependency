@@ -50,6 +50,16 @@ var linkClass = function(d) {
   return "link " + linkBase(d) + " " + linkTarget(d);
 }
 
+var showInfo = function($view, node, feature) {
+    $view.append("li").append("strong").text("name:" + node.name);
+    $view.append("li").append("strong").text("degree:" + node.degree);
+
+    feature.forEach(function(d){
+        $view.append("li")
+        .text(d);
+    })
+}
+
 //var egonet_json = "0.egonet.json";
 //var egonet_json = "3077.egonet.json";
 //var egonet_json = "14103.egonet.json";
@@ -59,15 +69,7 @@ d3.json(egonet_json, function(error, classes) {
         links = linkHash(nodes),
         feature = classes.feature;
 
-    var rootInfos = d3.select("#rootInfos");
-
-    rootInfos.append("li").append("strong").text("name:" + classes.name);
-    rootInfos.append("li").append("strong").text("degree:" + nodes.length);
-
-    feature.forEach(function(d){
-        rootInfos.append("li")
-        .text(d);
-    })
+    showInfo(d3.select("#rootInfos"), classes, feature);
 
     svg.selectAll(".link")
     .data(bundle(links))
@@ -97,7 +99,6 @@ d3.json(egonet_json, function(error, classes) {
     .on("mouseenter", function(d) {
         var current = d3.select(this);
         var current_id = current.datum().key;
-        var data = d;
 
         // stroke source & connecting path
         current.classed("active", true);
@@ -106,14 +107,7 @@ d3.json(egonet_json, function(error, classes) {
 
         var nodeInfos = d3.select("#nodeInfos");
         nodeInfos.selectAll("li").remove();
-
-        nodeInfos.append("li").append("strong").text("name:" + d.name);
-        nodeInfos.append("li").append("strong").text("degree:" + d.degree);
-
-        data.feature.forEach(function(d){
-            nodeInfos.append("li")
-            .text(d);
-        })
+        showInfo(nodeInfos, d, d.feature);
     })
     .on("mouseleave",  function() {
         var current = d3.select(this);
