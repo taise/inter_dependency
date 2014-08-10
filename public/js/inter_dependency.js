@@ -1,6 +1,7 @@
-var diameter = 1280,
+var diameter = 960,
     radius = diameter / 2,
-    innerRadius = radius - 60;
+    innerRadius = radius - 60,
+    width = diameter + 60;
 
 var cluster = d3.layout.cluster()
 .size([360, innerRadius])
@@ -15,7 +16,7 @@ var line = d3.svg.line.radial()
 .radius(function(d) { return d.y; })
 .angle(function(d) { return d.x / 180 * Math.PI; });
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#graph").append("svg")
 .attr("width", diameter)
 .attr("height", diameter)
 .append("g")
@@ -54,7 +55,8 @@ var linkClass = function(d) {
 var egonet_json = "14103.egonet.json";
 d3.json(egonet_json, function(error, classes) {
     var nodes = cluster.nodes(classes),
-        links = linkHash(nodes);
+        links = linkHash(nodes),
+        feature = classes.feature;
 
     svg.selectAll(".link")
     .data(bundle(links))
@@ -67,21 +69,42 @@ d3.json(egonet_json, function(error, classes) {
     .data(nodes.filter(function(n) { return !n.children; }))
     .enter().append("g")
     .attr("id", function(d) { return d.key })
-    .attr("class", "node")
+    .attr("class", function(d) {
+        var result = ["node"];
+        features = d.feature;
+        d.feature.forEach(function(attr){
+            result.push(attr);
+        });
+        return result.join(" ");
+    })
     .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
     .append("text")
     .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
     .attr("dy", ".31em")
     .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
     .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-    .on("mouseover", function() {
+    .on("mouseenter", function(d) {
         var current = d3.select(this);
         var current_id = current.datum().key;
+        var data = d;
+
+        // stroke source & connecting path
         current.classed("active", true);
         svg.selectAll(".v" + current_id)
         .classed("active", true)
+
+        var tooltip = d3.select("#tooltip");
+        tooltip.selectAll("li").remove();
+
+        tooltip.append("li").append("strong").text("name:" + d.name);
+        tooltip.append("li").append("strong").text("degree:" + d.degree);
+
+        data.feature.forEach(function(d){
+            tooltip.append("li")
+            .text(d);
+        })
     })
-    .on("mouseout",  function() {
+    .on("mouseleave",  function() {
         var current = d3.select(this);
         var current_id = current.datum().key;
         current.classed("active", false);
