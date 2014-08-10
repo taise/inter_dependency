@@ -1,7 +1,7 @@
-var diameter = 560,
+var diameter = 580,
     radius = diameter / 2,
     innerRadius = radius - 60,
-    width = diameter + 60;
+    width = diameter;
 
 var cluster = d3.layout.cluster()
 .size([360, innerRadius])
@@ -60,10 +60,10 @@ var showInfo = function($view, node, feature) {
     })
 }
 
-//var egonet_json = "0.egonet.json";
 //var egonet_json = "3077.egonet.json";
-//var egonet_json = "14103.egonet.json";
 var egonet_json = "1310.egonet.json";
+//var egonet_json = "14103.egonet.json";
+//var egonet_json = "0.egonet.json";
 d3.json(egonet_json, function(error, classes) {
     var nodes = cluster.nodes(classes),
         links = linkHash(nodes),
