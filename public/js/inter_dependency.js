@@ -64,7 +64,7 @@ var showInfo = function($view, node, feature) {
 var egonet_json = "1310.egonet.json";
 //var egonet_json = "14103.egonet.json";
 //var egonet_json = "0.egonet.json";
-d3.json(egonet_json, function(error, classes) {
+d3.json("json/" + egonet_json, function(error, classes) {
     var nodes = cluster.nodes(classes),
         links = linkHash(nodes),
         feature = classes.feature;
