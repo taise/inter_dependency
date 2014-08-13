@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Egonet graph</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
   </head>
   <body>
-    <h2>Inter dependency graph</h2>
+    <header id="indexHeader">
+      <h2>Inter dependency graph</h2>
+      <select id="selectEgonet" name="egonet">
+        <% @egonets.each do |egonet| %>
+          <option value="<%= egonet %>"><%= egonet %></option>
+        <% end %>
+      </select>
+    </header>
     <div id="infoBox">
       <div id="rootInfo">
         <p><strong>root node info</strong></p>

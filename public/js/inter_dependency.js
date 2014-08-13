@@ -60,65 +60,79 @@ var showInfo = function($view, node, feature) {
     })
 }
 
-//var egonet_json = "3077.egonet.json";
-var egonet_json = "1310.egonet.json";
-//var egonet_json = "14103.egonet.json";
-//var egonet_json = "0.egonet.json";
-d3.json("json/" + egonet_json, function(error, classes) {
-    var nodes = cluster.nodes(classes),
-        links = linkHash(nodes),
-        feature = classes.feature;
+var egonetDropdown = d3.select("#selectEgonet").on("change", changeEgonet),
+    options = egonetDropdown.selectAll('option').data();
 
-    showInfo(d3.select("#rootInfos"), classes, feature);
+console.log(egonetDropdown);
+console.log(options);
+function changeEgonet() {
+  console.log("onChange");
+  var selectedIndex = egonetDropdown.property('selectedIndex'),
+      egonet = options[0][selectedIndex].value();
 
-    svg.selectAll(".link")
-    .data(bundle(links))
-    .enter().append("path")
-    .attr("id", function(d) { return linkId(d)} )
-    .attr("class", function(d) { return linkClass(d)})
-    .attr("d", line)
+  rendering(egonet + ".json");
+  console.log("Rendered graph: " + egonet);
+};
 
-    svg.selectAll(".node")
-    .data(nodes.filter(function(n) { return !n.children; }))
-    .enter().append("g")
-    .attr("id", function(d) { return d.key })
-    .attr("class", function(d) {
-        var result = ["node"];
-        features = d.feature;
-        d.feature.forEach(function(attr){
-            result.push(attr);
-        });
-        return result.join(" ");
-    })
-    .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-    .append("text")
-    .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
-    .attr("dy", ".31em")
-    .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-    .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-    .on("mouseenter", function(d) {
-        var current = d3.select(this);
-        var current_id = current.datum().key;
+var rendering = function(egonetJson) {
+  d3.json("json/" + egonetJson, function(error, classes) {
+      var nodes = cluster.nodes(classes),
+          links = linkHash(nodes),
+          feature = classes.feature;
 
-        // stroke source & connecting path
-        current.classed("active", true);
-        svg.selectAll(".v" + current_id)
-        .classed("active", true)
+      showInfo(d3.select("#rootInfos"), classes, feature);
 
-        var nodeInfos = d3.select("#nodeInfos");
-        nodeInfos.selectAll("li").remove();
-        showInfo(nodeInfos, d, d.feature);
-    })
-    .on("mouseleave",  function() {
-        var current = d3.select(this);
-        var current_id = current.datum().key;
-        current.classed("active", false);
-        svg.selectAll(".v" + current_id)
-        .classed("active", false)
-    })
-    .text(function(d) { return d.key; });
-});
+      svg.selectAll(".link")
+      .data(bundle(links))
+      .enter().append("path")
+      .attr("id", function(d) { return linkId(d)} )
+      .attr("class", function(d) { return linkClass(d)})
+      .attr("d", line)
 
-d3.select(self.frameElement).style("height", diameter + "px");
+      svg.selectAll(".node")
+      .data(nodes.filter(function(n) { return !n.children; }))
+      .enter().append("g")
+      .attr("id", function(d) { return d.key })
+      .attr("class", function(d) {
+          var result = ["node"];
+          features = d.feature;
+          d.feature.forEach(function(attr){
+              result.push(attr);
+          });
+          return result.join(" ");
+      })
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+      .append("text")
+      .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+      .attr("dy", ".31em")
+      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+      .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+      .on("mouseenter", function(d) {
+          var current = d3.select(this);
+          var current_id = current.datum().key;
 
+          // stroke source & connecting path
+          current.classed("active", true);
+          svg.selectAll(".v" + current_id)
+          .classed("active", true)
+
+          var nodeInfos = d3.select("#nodeInfos");
+          nodeInfos.selectAll("li").remove();
+          showInfo(nodeInfos, d, d.feature);
+      })
+      .on("mouseleave",  function() {
+          var current = d3.select(this);
+          var current_id = current.datum().key;
+          current.classed("active", false);
+          svg.selectAll(".v" + current_id)
+          .classed("active", false)
+      })
+      .text(function(d) { return d.key; });
+  });
+
+  d3.select(self.frameElement).style("height", diameter + "px");
+}
+
+var egonetJson = "3077.egonet.json";
+rendering(egonetJson);
 
