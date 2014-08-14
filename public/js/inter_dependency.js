@@ -68,9 +68,10 @@ function changeEgonet() {
   var selectedIndex = egonetDropdown.property('selectedIndex'),
       egonet = options[0][selectedIndex].value;
 
+  // reset graph & infos
   d3.select("#rootNode").selectAll("*").remove();
   d3.select("#rootInfos").selectAll("*").remove();
-  rendering(egonet + ".json");
+  rendering(egonet + ".egonet.json");
   console.log("Rendered graph: " + egonet);
 };
 
