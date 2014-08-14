@@ -1,9 +1,12 @@
+console.log("coffee")
+
 class Glaph
   constructor: (@diameter) ->
 
   radius:      @diameter / 2
   innerRadius: @radius - 60
   width:       @diameter
+  bundle: d3.layout.bundle()
 
 class Cluster
   constructor: (@innerRadius) ->
@@ -17,7 +20,6 @@ class Cluster
     .value (d) =>
       d.degree
 
-class Bundle
-  self: d3.layout.bundle()
 
-
+graph = new Glaph
+console.log(graph.bundle)
