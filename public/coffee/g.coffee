@@ -1,7 +1,7 @@
 console.log("coffee")
 
 class Glaph
-  constructor: (@diameter) ->
+  constructor: (@diameter = 780) ->
 
   radius:      @diameter / 2
   innerRadius: @radius - 60
@@ -20,6 +20,3 @@ class Cluster
     .value (d) =>
       d.degree
 
-
-graph = new Glaph
-console.log(graph.bundle)
