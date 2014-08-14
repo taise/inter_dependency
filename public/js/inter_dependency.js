@@ -1,4 +1,4 @@
-var diameter = 580,
+var diameter = 780,
     radius = diameter / 2,
     innerRadius = radius - 60,
     width = diameter;
@@ -20,6 +20,7 @@ var svg = d3.select("#graph").append("svg")
 .attr("width", diameter)
 .attr("height", diameter)
 .append("g")
+.attr("id", "rootNode")
 .attr("transform", "translate(" + radius + "," + radius + ")");
 
 var linkHash = function(nodes){
@@ -61,15 +62,14 @@ var showInfo = function($view, node, feature) {
 }
 
 var egonetDropdown = d3.select("#selectEgonet").on("change", changeEgonet),
-    options = egonetDropdown.selectAll('option').data();
+    options = egonetDropdown.selectAll('option');
 
-console.log(egonetDropdown);
-console.log(options);
 function changeEgonet() {
-  console.log("onChange");
   var selectedIndex = egonetDropdown.property('selectedIndex'),
-      egonet = options[0][selectedIndex].value();
+      egonet = options[0][selectedIndex].value;
 
+  d3.select("#rootNode").selectAll("*").remove();
+  d3.select("#rootInfos").selectAll("*").remove();
   rendering(egonet + ".json");
   console.log("Rendered graph: " + egonet);
 };
