@@ -52,8 +52,9 @@ var linkClass = function(d) {
 }
 
 var showInfo = function($view, node, feature) {
-    $view.append("li").append("strong").text("name:" + node.name);
-    $view.append("li").append("strong").text("degree:" + node.degree);
+    $view.append("li").append("strong").text("name: " + node.name);
+    $view.append("li").append("strong").text("degree: " + node.degree);
+    $view.append("li").append("strong").text("component: " + (node.component || "root"));
 
     feature.forEach(function(d){
         $view.append("li")
