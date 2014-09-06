@@ -1,3 +1,5 @@
 Gemfile.lock
-.bundle/
-vendor/
+.bundle
+vendor
+log
+tmp
