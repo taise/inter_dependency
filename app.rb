@@ -1,6 +1,8 @@
-require 'sinatra'
+require 'sinatra/base'
 require 'sinatra/reloader'
 
-get '/' do
-  File.read(File.join('public', 'index.html'))
+class InterDependency < Sinatra::Base
+  get '/' do
+    File.read(File.join('public', 'index.html'))
+  end
 end
