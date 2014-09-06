@@ -6,7 +6,7 @@ worker_processes  2
 working_directory @base_dir
 
 timeout 300
-listen  8081
+listen  File.join(@tmp_dir, "unicorn.sock"), backlog: 1024
 
 pid File.join(@tmp_dir, "unicorn.pid")
 
